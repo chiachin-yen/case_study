@@ -379,7 +379,7 @@ class CaseCollector(object):
                     except Exception:
                         logging.error('Failed to download ' + image_url)
                         return False
-                    time.sleep(1)
+                    time.sleep(2)
                 else:
                     all_link.append(image_url)
 
