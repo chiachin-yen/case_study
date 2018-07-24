@@ -1,6 +1,6 @@
-# Project Title
+# Tools for case studying by web
 
-One Paragraph of project description goes here
+WIP, and following text are a copy from template.
 
 ## Getting Started
 
