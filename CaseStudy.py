@@ -7,6 +7,7 @@ import errno
 import json
 import logging
 import os
+import random
 import time
 import urllib.error
 import urllib.parse
@@ -17,12 +18,12 @@ __version__ = "0.1"
 
 
 # Beta parameters
-test_URL = [
-    'https://www.archdaily.com/160044/more-about-foster-partners-new-apple-campus-in-cupertino']
 user_agent = ('Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) '
               'Gecko/20100101 Firefox/42.0')
 
 # Logging
+if not os.path.exists('log'):
+    os.mkdir('log')
 log_filename = os.path.join('log', datetime.now().strftime("%Y-%m-%d.log"))
 logging.basicConfig(
     level=logging.DEBUG,
@@ -44,8 +45,9 @@ class CaseStudy(object):
     """Basic tools."""
 
     def __init__(self):
-        "Initialize class."
-        self.user_agent = ('Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) '
+        """Initialize class."""
+        self.user_agent = ('Mozilla/5.0 '
+                           '(Macintosh; Intel Mac OS X x.y; rv:42.0) '
                            'Gecko/20100101 Firefox/42.0')
 
     def get_html(self, url):
@@ -77,7 +79,7 @@ class CaseCollector(object):
     def json_writer(self, path, meta=None):
         """Write json data."""
         try:
-            with open(path, 'w') as json_file:
+            with open(path, 'w', encoding='utf-8') as json_file:
                 json.dump(meta, json_file)
             return True
         except Exception:
@@ -506,24 +508,30 @@ class AD_page_getter(object):
         """Initialize class instance."""
         self.interval = interval
 
-    def AD_project_by_category(self, category):
+    def AD_project_by_category(self, category, start=1, pages=-1,
+                               rand_interval=False):
         """Harvest all project by category."""
         url = ('https://www.archdaily.com/search/projects/'
                'categories/{}?page=').format(category)
 
-        i = 0
-        while True:
-            i += 1
+        i = start
+        while i < start+pages or pages < 0:
             logging.info('Fetching search result page ' + str(i))
             search_links = self.AD_link_from_page(url + str(i))
             if search_links == []:
-                logging.critical('searching ends at page ' + str(i - 1))
                 break
             else:
                 for result in search_links:
-                    print(result['href'])
+                    yield 'https://www.archdaily.com'+result['href']
 
-            time.sleep(self.interval)
+            if rand_interval:
+                time.sleep(random.normalvariate(5, 2))
+            else:
+                time.sleep(self.interval)
+
+            i += 1
+
+        logging.critical('searching ends at page ' + str(i - 1))
 
         return True
 
@@ -549,4 +557,7 @@ class AD_page_getter(object):
 if __name__ == '__main__':
     case_collector = CaseCollector()
     getter = AD_page_getter(interval=0)
-    getter.AD_project_by_category('asylum')
+    fetcher = CaseCollector()
+    for item in getter.AD_project_by_category(category='houses', pages=1):
+        fetcher.ArchDaily_Operation(item, get_gallery=False)
+        time.sleep(random.normalvariate(5, 2))
