@@ -40,6 +40,30 @@ console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
 
+class CaseStudy(object):
+    """Basic tools."""
+
+    def __init__(self):
+        "Initialize class."
+        self.user_agent = ('Mozilla/5.0 (Macintosh; Intel Mac OS X x.y; rv:42.0) '
+                           'Gecko/20100101 Firefox/42.0')
+
+    def get_html(self, url):
+        """Return html content from thr given url."""
+        request = urllib.request.Request(
+            url, None, {'User-Agent': self.user_agent})
+
+        try:
+            response = urllib.request.urlopen(request)
+            return response
+        except urllib.error.HTTPError as e:
+            logging.error(e)
+            return False
+        except urllib.error.URLError as e:
+            logging.error('URLError')
+            return False
+
+
 class CaseCollector(object):
     """A tool for intense case study."""
 
