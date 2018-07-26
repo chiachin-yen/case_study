@@ -14,7 +14,7 @@ import urllib.parse
 import urllib.request
 
 __author__ = "Chia Chin Yen"
-__version__ = "0.1"
+__version__ = "0.1.0"
 
 
 # Beta parameters
@@ -27,15 +27,15 @@ if not os.path.exists('log'):
 log_filename = os.path.join('log', datetime.now().strftime("%Y-%m-%d.log"))
 logging.basicConfig(
     level=logging.DEBUG,
-    filename=log_filename,
-    format='%(asctime)s|%(name)-8s|%(levelname)-8s|%(message)s',
-    datefmt='%H:%M:%S')
+    format=u'%(asctime)s|%(name)-8s|%(levelname)-8s|%(message)s',
+    datefmt='%H:%M:%S',
+    handlers=[logging.FileHandler(log_filename, 'w', 'utf-8')])
 
 # Define handler to output sys.stderr
 console = logging.StreamHandler()
 console.setLevel(logging.DEBUG)
 formatter = logging.Formatter(
-    fmt='%(asctime)s,%(name)-8s,%(levelname)-8s,%(message)s',
+    fmt=u'%(asctime)s,%(name)-8s,%(levelname)-8s,%(message)s',
     datefmt='%H:%M:%S')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
@@ -80,7 +80,7 @@ class CaseCollector(object):
         """Write json data."""
         try:
             with open(path, 'w', encoding='utf-8') as json_file:
-                json.dump(meta, json_file)
+                json.dump(meta, json_file, ensure_ascii=False)
             return True
         except Exception:
             return False
@@ -142,6 +142,7 @@ class CaseCollector(object):
         get_article=True,
         get_gallery=True,
         get_data=True,
+        summary=True
     ):
         """Fetch ArchDaily pages."""
         logging.info('Fetching mode : ArchDaily')
@@ -170,31 +171,32 @@ class CaseCollector(object):
 
         # Read the fetching history
         id_found = -1
-        if os.path.exists(summary_path):
-            with open(summary_path, 'r', newline='') as summary_file:
-                summary_reader = csv.DictReader(summary_file)
-                logging.debug('summary path exist')
-                for i, row in enumerate(summary_reader, 1):
-                    if page_id == row['ID']:
-                        id_found = i
-                        logging.info('ID founded at line '+str(id_found))
-                        # Check previous fetching status
-                        if row['fetcher_ver'] != __version__:
-                            logging.critical('different fetcher version, '
-                                             'recommanding manual check.')
-                            return False
+        if summary:
+            if os.path.exists(summary_path):
+                with open(summary_path, 'r', newline='') as summary_file:
+                    summary_reader = csv.DictReader(summary_file)
+                    logging.debug('summary path exist')
+                    for i, row in enumerate(summary_reader, 1):
+                        if page_id == row['ID']:
+                            id_found = i
+                            logging.info('ID founded at line '+str(id_found))
+                            # Check previous fetching status
+                            if row['fetcher_ver'] != __version__:
+                                logging.critical('different fetcher version, '
+                                                 'recommanding manual check.')
+                                return False
 
-                        else:
-                            if row['article'] == 'True':
-                                fetch_result['article'] = True
-                                get_article = False
-                            if row['gallery'] == 'True':
-                                fetch_result['gallery'] = True
-                                get_gallery = False
-                            if row['data'] == 'True':
-                                fetch_result['data'] = True
-                                get_data = False
-                        break
+                            else:
+                                if row['article'] == 'True':
+                                    fetch_result['article'] = True
+                                    get_article = False
+                                if row['gallery'] == 'True':
+                                    fetch_result['gallery'] = True
+                                    get_gallery = False
+                                if row['data'] == 'True':
+                                    fetch_result['data'] = True
+                                    get_data = False
+                            break
 
         # Create a summary file if there is none
         else:
@@ -317,24 +319,25 @@ class CaseCollector(object):
             ArchDaily_url)
 
         # Write the result to the summary
-        if int(id_found) >= 0:
-            # Delete previous record then add new one
-            inline = None
-            with open(summary_path, 'r') as previous_summary:
-                inline = previous_summary.readlines()
-            with open(summary_path, 'w') as outfile:
-                line_num = int(id_found)
-                for index, line in enumerate(inline):
-                    if index != line_num:
-                        outfile.write(line)
-                    else:
-                        logging.debug('deleting line ' + str(index))
+        if summary:
+            if int(id_found) >= 0:
+                # Delete previous record then add new one
+                inline = None
+                with open(summary_path, 'r') as previous_summary:
+                    inline = previous_summary.readlines()
+                with open(summary_path, 'w') as outfile:
+                    line_num = int(id_found)
+                    for index, line in enumerate(inline):
+                        if index != line_num:
+                            outfile.write(line)
+                        else:
+                            logging.debug('deleting line ' + str(index))
 
-        with open(summary_path, 'a', newline='') as summary_file:
-            summary_writer = csv.DictWriter(
-                summary_file, fieldnames=headers)
-            summary_writer.writerow(fetch_result)
-            logging.critical('Fetching Success')
+            with open(summary_path, 'a', newline='') as summary_file:
+                summary_writer = csv.DictWriter(
+                    summary_file, fieldnames=headers)
+                summary_writer.writerow(fetch_result)
+                logging.critical('Fetching Success')
 
         return True
 
@@ -464,7 +467,7 @@ class CaseCollector(object):
 
             for key, value in category.items():
                 logging.info(
-                    'category result of {}: {}'.format(key, value))
+                    u'category result of {}: {}'.format(key, value))
             return category
         else:
             return False
@@ -555,9 +558,11 @@ class AD_page_getter(object):
 
 
 if __name__ == '__main__':
-    case_collector = CaseCollector()
     getter = AD_page_getter(interval=0)
     fetcher = CaseCollector()
-    for item in getter.AD_project_by_category(category='houses', pages=1):
+    fetcher.ArchDaily_Operation(
+        url='https://www.archdaily.com/895811/',
+        summary=False)
+"""     for item in getter.AD_project_by_category(category='houses', pages=1):
         fetcher.ArchDaily_Operation(item, get_gallery=False)
-        time.sleep(random.normalvariate(5, 2))
+        time.sleep(random.normalvariate(5, 2)) """
