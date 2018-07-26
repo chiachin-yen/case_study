@@ -173,7 +173,8 @@ class CaseCollector(object):
         id_found = -1
         if summary:
             if os.path.exists(summary_path):
-                with open(summary_path, 'r', newline='') as summary_file:
+                with open(summary_path, 'r',
+                          encoding='utf-8', newline='') as summary_file:
                     summary_reader = csv.DictReader(summary_file)
                     logging.debug('summary path exist')
                     for i, row in enumerate(summary_reader, 1):
@@ -198,14 +199,15 @@ class CaseCollector(object):
                                     get_data = False
                             break
 
-        # Create a summary file if there is none
-        else:
-            if not os.path.exists(self.ArchDaily_root):
-                os.makedirs(self.ArchDaily_root)
-            with open(summary_path, 'w', newline='') as summary_file:
-                summary_writer = csv.DictWriter(
-                    summary_file, fieldnames=headers)
-                summary_writer.writeheader()
+            # Create a summary file if there is none
+            else:
+                if not os.path.exists(self.ArchDaily_root):
+                    os.makedirs(self.ArchDaily_root)
+                with open(summary_path, 'w',
+                          encoding='utf-8', newline='') as summary_file:
+                    summary_writer = csv.DictWriter(
+                        summary_file, fieldnames=headers)
+                    summary_writer.writeheader()
 
         # New ID detected
         if id_found < 0:
@@ -333,7 +335,8 @@ class CaseCollector(object):
                         else:
                             logging.debug('deleting line ' + str(index))
 
-            with open(summary_path, 'a', newline='') as summary_file:
+            with open(summary_path, 'a',
+                      encoding='utf-8', newline='') as summary_file:
                 summary_writer = csv.DictWriter(
                     summary_file, fieldnames=headers)
                 summary_writer.writerow(fetch_result)
@@ -560,9 +563,6 @@ class AD_page_getter(object):
 if __name__ == '__main__':
     getter = AD_page_getter(interval=0)
     fetcher = CaseCollector()
-    fetcher.ArchDaily_Operation(
-        url='https://www.archdaily.com/895811/',
-        summary=False)
-"""     for item in getter.AD_project_by_category(category='houses', pages=1):
-        fetcher.ArchDaily_Operation(item, get_gallery=False)
-        time.sleep(random.normalvariate(5, 2)) """
+    for item in getter.AD_project_by_category(category='houses', start=2, pages=200):
+        fetcher.ArchDaily_Operation(item, get_gallery=False, summary=False)
+        time.sleep(abs(random.normalvariate(3, 2)))
