@@ -563,6 +563,6 @@ class AD_page_getter(object):
 if __name__ == '__main__':
     getter = AD_page_getter(interval=0)
     fetcher = CaseCollector()
-    for item in getter.AD_project_by_category(category='houses', start=2, pages=200):
+    for item in getter.AD_project_by_category(category='houses', start=202):
         fetcher.ArchDaily_Operation(item, get_gallery=False, summary=False)
         time.sleep(abs(random.normalvariate(3, 2)))
