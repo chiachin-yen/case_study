@@ -1,5 +1,6 @@
 """Web enhanced case study."""
 
+from argparse import ArgumentParser
 from bs4 import BeautifulSoup
 import csv
 from datetime import datetime
@@ -39,6 +40,14 @@ formatter = logging.Formatter(
     datefmt='%H:%M:%S')
 console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
+
+# Create arguments parser
+arg_parser = ArgumentParser()
+arg_parser.add_argument("-url",
+                        "--optional-arg",
+                        help="optional argument",
+                        dest="opt",
+                        default="default")
 
 
 class CaseStudy(object):
