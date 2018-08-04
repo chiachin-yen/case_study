@@ -44,7 +44,11 @@ logging.getLogger('').addHandler(console)
 # Create arguments parser
 arg_parser = ArgumentParser()
 arg_parser.add_argument('url',
+                        nargs='?',
                         help='url to fetch')
+arg_parser.add_argument('-AD_id',
+                        dest='ArchDaily_page_ID',
+                        help='ArchDaily page ID')
 
 
 class CaseStudy(object):
@@ -481,6 +485,10 @@ class CaseCollector(object):
         else:
             return False
 
+    def Archdaily_ID_to_url(self, page_id):
+        """Append id to ArchDaily url."""
+        return("https://www.archdaily.com/"+str(page_id))
+
     def save_url(self, path, url=''):
         """Save a html with original link."""
         with open(path, 'w', encoding='utf-8') as link_file:
@@ -570,4 +578,15 @@ if __name__ == '__main__':
     getter = AD_page_getter(interval=0)
     fetcher = CaseCollector()
     args = arg_parser.parse_args()
-    fetcher.ArchDaily_Operation(args.url, summary=False)
+    if args.ArchDaily_page_ID is not None:
+        fetcher.ArchDaily_Operation(
+            fetcher.Archdaily_ID_to_url(args.ArchDaily_page_ID),
+            summary=False)
+
+    elif args.ArchDaily_page_ID is None:
+        input_ID = input("ArchDaily Page ID: ")
+        fetcher.ArchDaily_Operation(
+            fetcher.Archdaily_ID_to_url(input_ID),
+            summary=False)
+    else:
+        fetcher.ArchDaily_Operation(args.url, summary=False)
