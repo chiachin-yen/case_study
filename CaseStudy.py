@@ -43,11 +43,8 @@ logging.getLogger('').addHandler(console)
 
 # Create arguments parser
 arg_parser = ArgumentParser()
-arg_parser.add_argument("-url",
-                        "--optional-arg",
-                        help="optional argument",
-                        dest="opt",
-                        default="default")
+arg_parser.add_argument('url',
+                        help='url to fetch')
 
 
 class CaseStudy(object):
@@ -114,7 +111,7 @@ class CaseCollector(object):
         logging.info('Start Fetching at {}'.format(datetime.now()))
 
         # detect the website
-        url_parser = urllib.parse.urlparse(url)
+        url_parser = urllib.parse.urlparse(url.lstrip())
 
         if url_parser.netloc == 'www.archdaily.com':
             logging.info('Detected website : ArchDaily')
@@ -157,7 +154,7 @@ class CaseCollector(object):
         logging.info('Fetching mode : ArchDaily')
 
         # Parse the url
-        ArchDaily_url = urllib.parse.urlparse(url)
+        ArchDaily_url = urllib.parse.urlparse(url.lstrip())
 
         # Get page ID
         page_id = str(ArchDaily_url.path.split('/')[1])
@@ -572,6 +569,5 @@ class AD_page_getter(object):
 if __name__ == '__main__':
     getter = AD_page_getter(interval=0)
     fetcher = CaseCollector()
-    for item in getter.AD_project_by_category(category='houses', start=357):
-        fetcher.ArchDaily_Operation(item, get_gallery=False, summary=False)
-        time.sleep(abs(random.normalvariate(3, 2)))
+    args = arg_parser.parse_args()
+    fetcher.ArchDaily_Operation(args.url, summary=False)
