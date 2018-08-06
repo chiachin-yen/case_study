@@ -1,2 +1,2 @@
-python CaseStudy.python
+python CaseStudy.py
 pause

@@ -49,6 +49,9 @@ arg_parser.add_argument('url',
 arg_parser.add_argument('-AD_id',
                         dest='ArchDaily_page_ID',
                         help='ArchDaily page ID')
+arg_parser.add_argument('-AD_ca',
+                        dest='ArchDaily_category',
+                        help='ArchDaily project category')
 
 
 class CaseStudy(object):
@@ -415,13 +418,18 @@ class CaseCollector(object):
                 image_filename = os.path.join(path, image_name)
 
                 if not link_only:
-                    try:
-                        urllib.request.urlretrieve(image_url, image_filename)
-                        logging.info(image_name + ' Downloaded')
-                    except Exception:
-                        logging.error('Failed to download ' + image_url)
-                        return False
-                    time.sleep(2)
+                    if not os.path.isfile(image_filename):
+                        try:
+                            req = urllib.request.Request(
+                                image_url, headers={'User-Agent': user_agent})
+                            temp_img = urllib.request.urlopen(req)
+                            with open(image_filename, 'wb') as img_file:
+                                img_file.write(temp_img.read())
+                            logging.info(image_name + ' Downloaded')
+                        except Exception:
+                            logging.error('Failed to download ' + image_url)
+                            return False
+                        time.sleep(abs(random.normalvariate(3, 1)))
                 else:
                     all_link.append(image_url)
 
@@ -529,7 +537,7 @@ class AD_page_getter(object):
         self.interval = interval
 
     def AD_project_by_category(self, category, start=1, pages=-1,
-                               rand_interval=False):
+                               rand_interval=True):
         """Harvest all project by category."""
         url = ('https://www.archdaily.com/search/projects/'
                'categories/{}?page=').format(category)
@@ -545,7 +553,7 @@ class AD_page_getter(object):
                     yield 'https://www.archdaily.com'+result['href']
 
             if rand_interval:
-                time.sleep(random.normalvariate(5, 2))
+                time.sleep(abs(random.normalvariate(5, 2)))
             else:
                 time.sleep(self.interval)
 
@@ -582,6 +590,12 @@ if __name__ == '__main__':
         fetcher.ArchDaily_Operation(
             fetcher.Archdaily_ID_to_url(args.ArchDaily_page_ID),
             summary=False)
+
+    elif args.ArchDaily_category is not None:
+        for page_url in getter.AD_project_by_category(
+                category=args.ArchDaily_category):
+            time.sleep(abs(random.normalvariate(5, 2)))
+            fetcher.ArchDaily_Operation(page_url, summary=False)
 
     elif args.ArchDaily_page_ID is None:
         input_ID = input("ArchDaily Page ID: ")
