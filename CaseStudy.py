@@ -595,7 +595,7 @@ if __name__ == '__main__':
         for page_url in getter.AD_project_by_category(
                 category=args.ArchDaily_category):
             time.sleep(abs(random.normalvariate(5, 2)))
-            fetcher.ArchDaily_Operation(page_url, summary=False)
+            fetcher.ArchDaily_Operation(page_url, summary=True)
 
     elif args.ArchDaily_page_ID is None:
         input_ID = input("ArchDaily Page ID: ")
