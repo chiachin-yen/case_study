@@ -338,9 +338,9 @@ class CaseCollector(object):
             if int(id_found) >= 0:
                 # Delete previous record then add new one
                 inline = None
-                with open(summary_path, 'r') as previous_summary:
+                with open(summary_path, 'r', encoding='utf-8') as previous_summary:
                     inline = previous_summary.readlines()
-                with open(summary_path, 'w') as outfile:
+                with open(summary_path, 'w', encoding='utf-8') as outfile:
                     line_num = int(id_found)
                     for index, line in enumerate(inline):
                         if index != line_num:
