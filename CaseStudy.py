@@ -338,8 +338,8 @@ class CaseCollector(object):
             if int(id_found) >= 0:
                 # Delete previous record then add new one
                 inline = None
-                with open(summary_path, 'r', encoding='utf-8') as previous_summary:
-                    inline = previous_summary.readlines()
+                with open(summary_path, 'r', encoding='utf-8') as prev_summary:
+                    inline = prev_summary.readlines()
                 with open(summary_path, 'w', encoding='utf-8') as outfile:
                     line_num = int(id_found)
                     for index, line in enumerate(inline):
@@ -598,9 +598,13 @@ if __name__ == '__main__':
             fetcher.ArchDaily_Operation(page_url, summary=True)
 
     elif args.ArchDaily_page_ID is None:
-        input_ID = input("ArchDaily Page ID: ")
-        fetcher.ArchDaily_Operation(
-            fetcher.Archdaily_ID_to_url(input_ID),
-            summary=False)
+        while True:
+            input_ID = input("ArchDaily Page ID: ")
+            if input_ID != '':
+                fetcher.ArchDaily_Operation(
+                    fetcher.Archdaily_ID_to_url(input_ID),
+                    summary=False)
+            else:
+                break
     else:
         fetcher.ArchDaily_Operation(args.url, summary=False)
