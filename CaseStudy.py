@@ -382,15 +382,23 @@ class CaseCollector(object):
 
     def ArchDaily_article(self, path, bs_parser):
         """Find the article in ArchDaily."""
-        article = bs_parser.find('article')
+        # Test if article is content_legacy
+        article = bs_parser.find('div', id='content_legacy')
+        if article is None:
+            article = bs_parser.find('article')
+
+        # remove tags except tags in white list
         all_tags = [tag.name for tag in article.find_all()]
         tag_list = list(set(all_tags))
         white_list = ['p', 'a']
         for tag in white_list:
-            tag_list.remove(tag)
+            if tag in tag_list:
+                tag_list.remove(tag)
         for no_tag in tag_list:
             for soup in article(no_tag):
                 soup.extract()
+
+        # combine text in paragraph
         text = article.text.strip()
 
         if len(text) > 0:
@@ -599,11 +607,19 @@ if __name__ == '__main__':
 
     elif args.ArchDaily_page_ID is None:
         while True:
-            input_ID = input("ArchDaily Page ID: ")
+            input_ID = input('ArchDaily Page ID: ')
+            get_image = input('Download image? (y/n): ')
             if input_ID != '':
-                fetcher.ArchDaily_Operation(
-                    fetcher.Archdaily_ID_to_url(input_ID),
-                    summary=False)
+                if get_image == 'n':
+                    fetcher.ArchDaily_Operation(
+                        fetcher.Archdaily_ID_to_url(input_ID),
+                        get_gallery=False,
+                        summary=False)
+                else:
+                    fetcher.ArchDaily_Operation(
+                        fetcher.Archdaily_ID_to_url(input_ID),
+                        summary=False)
+
             else:
                 break
     else:
