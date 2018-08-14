@@ -390,7 +390,7 @@ class CaseCollector(object):
         # remove tags except tags in white list
         all_tags = [tag.name for tag in article.find_all()]
         tag_list = list(set(all_tags))
-        white_list = ['p', 'a']
+        white_list = ['p', 'a', 'b']
         for tag in white_list:
             if tag in tag_list:
                 tag_list.remove(tag)
