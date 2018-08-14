@@ -6,6 +6,12 @@ WIP, and following text are a copy from template.
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
+To download a page on ArchDaily
+
+$python CaseStudy.py
+$python CaseStudy.py -AD_ID 000000
+$python CaseStudy.py -url https:/www.archdaily.com/000000
+
 ### Prerequisites
 
 Python 3.6
@@ -81,4 +87,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * Hat tip to anyone whose code was used
 * Inspiration
 * etc
-
