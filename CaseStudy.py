@@ -423,6 +423,17 @@ class CaseCollector(object):
 
                 image_url = str(
                     item['data-src']).replace('thumb_jpg', 'large_jpg')
+
+                # Trim the query string in the url
+                image_url = urllib.parse.urlparse(image_url.lstrip())
+                """
+                query = urllib.parse.parse_qs(ArchDaily_url.query)
+                query.pop('q2', None)
+                """
+
+                image_url = image_url._replace(query='')
+                image_url = urllib.parse.urlunparse(image_url)
+
                 image_filename = os.path.join(path, image_name)
 
                 if not link_only:
