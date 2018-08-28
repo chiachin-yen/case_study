@@ -426,11 +426,6 @@ class CaseCollector(object):
 
                 # Trim the query string in the url
                 image_url = urllib.parse.urlparse(image_url.lstrip())
-                """
-                query = urllib.parse.parse_qs(ArchDaily_url.query)
-                query.pop('q2', None)
-                """
-
                 image_url = image_url._replace(query='')
                 image_url = urllib.parse.urlunparse(image_url)
 
@@ -445,8 +440,9 @@ class CaseCollector(object):
                             with open(image_filename, 'wb') as img_file:
                                 img_file.write(temp_img.read())
                             logging.info(image_name + ' Downloaded')
-                        except Exception:
+                        except Exception as e:
                             logging.error('Failed to download ' + image_url)
+                            logging.error('error msg: ' + str(e))
                             return False
                         time.sleep(abs(random.normalvariate(3, 1)))
                 else:
