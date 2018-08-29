@@ -415,8 +415,13 @@ class CaseCollector(object):
                 bs_parser.find_all('a', class_='gallery-thumbs-link'), 1):
             for item in gallery_item.find_all('img'):
                 if 'alt' in item.attrs:
+                    img_desc = self.format_filename(item['alt'])
+                    # Truncate name if it exceed maxium char num of 72
+                    if len(img_desc) > 72:
+                        img_desc = (img_desc[:69] + '(S)')
+
                     image_name = '{}-image{}-{}.jpg'.format(
-                        page_id, i, self.format_filename(item['alt'])
+                        page_id, i, self.format_filename(img_desc)
                     )
                 else:
                     image_name = '{}-image{}.jpg'.format(page_id, i)
