@@ -1,10 +1,10 @@
 # Tools for case studying by web
 
-WIP, and following text are a copy from template.
+A tool to collect cases from architectural websites for educational usage.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Currently supporting website: ArchDaily.com
 
 To download a page on ArchDaily
 
@@ -17,60 +17,17 @@ $python CaseStudy.py -url https:/www.archdaily.com/000000
 Python 3.6
 bs4
 
-```
-Give examples
-```
-
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+1. Clone the project to your local disc with Python 3.6 environment.
+2. Install dependencies.
+3. Click 'run.bat' if you're running a Windows system.
+4. Follow the instruction on show on your terminal.
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning.
 
 ## License
 
@@ -78,6 +35,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* The copyright of downloaded images and text belongs to their respective owners.
