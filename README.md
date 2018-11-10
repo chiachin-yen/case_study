@@ -22,12 +22,12 @@ bs4
 1. Clone the project to your local disc with Python 3.6 environment.
 2. Install dependencies.
 3. Click 'run.bat' if you're running a Windows system.
-4. Follow the instruction on show on your terminal.
+4. Follow the instruction on show your terminal.
 
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning.
+I use [SemVer](http://semver.org/) for versioning.
 
 ## License
 
