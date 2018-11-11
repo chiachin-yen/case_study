@@ -14,6 +14,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+import image_utilities
+
 __author__ = "Chia Chin Yen"
 __version__ = "0.1.0"
 
@@ -52,7 +54,9 @@ arg_parser.add_argument('-AD_id',
 arg_parser.add_argument('-AD_ca',
                         dest='ArchDaily_category',
                         help='ArchDaily project category')
-
+arg_parser.add_argument('-AD_re',
+                        dest='ArchDaily_re',
+                        help='ArchDaily re-download images.')
 
 class CaseStudy(object):
     """Basic tools."""
@@ -451,7 +455,7 @@ class CaseCollector(object):
                             return False
                         time.sleep(abs(random.normalvariate(3, 1)))
                 else:
-                    all_link.append(image_url)
+                    all_link.append(image_url+'\t'+image_name)
 
         if link_only:
             self.write_TXT(
@@ -459,6 +463,30 @@ class CaseCollector(object):
                 all_link)
 
         return True
+
+    def ArchDaily_re_gallery(self, dir_path):
+        """Download all image in an previously fetched AD pages
+        with version before 0.1.0.
+        """
+        for (dirpath, dirnames, filenames) in os.walk(dir_path):
+            for filename in filenames:
+                if "-page.html" in filename:
+                    finish = os.path.join(dirpath, 'finished.txt')
+                    if not os.path.isfile(finish):
+                        page_id = filename.split('-')[0]
+                        fp = os.path.join(dirpath, filename)
+                        with open(fp, 'r', encoding='utf-8') as f:
+                            image_parser = BeautifulSoup(
+                                f.read(),
+                                'html.parser')
+                            if self.ArchDaily_gallery(
+                                path=dirpath,
+                                page_id=page_id,
+                                bs_parser=image_parser,
+                                link_only=False
+                            ):
+                                with open(finish, 'w') as f:
+                                    pass
 
     def Archdaily_time_string(self, bs_parser):
         """Fetch the date string in AD article."""
@@ -634,5 +662,6 @@ if __name__ == '__main__':
 
             else:
                 break
+
     else:
         fetcher.ArchDaily_Operation(args.url, summary=False)

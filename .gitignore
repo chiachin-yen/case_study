@@ -109,3 +109,7 @@ venv.bak/
 # Downloaded Content
 ArchDaily/
 log/
+
+# devloping
+dev/
+test.py

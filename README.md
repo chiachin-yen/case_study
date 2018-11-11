@@ -12,10 +12,11 @@ $python CaseStudy.py
 $python CaseStudy.py -AD_ID 000000
 $python CaseStudy.py -url https:/www.archdaily.com/000000
 
-### Prerequisites
+### Dependencies
 
-Python 3.6
+Python
 bs4
+Pillow
 
 ### Installing
 
