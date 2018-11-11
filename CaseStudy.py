@@ -58,6 +58,7 @@ arg_parser.add_argument('-AD_re',
                         dest='ArchDaily_re',
                         help='ArchDaily re-download images.')
 
+
 class CaseStudy(object):
     """Basic tools."""
 
@@ -412,7 +413,8 @@ class CaseCollector(object):
             logging.warning('Get empty article')
             return False
 
-    def ArchDaily_gallery(self, path, page_id, bs_parser, link_only=False):
+    def ArchDaily_gallery(
+            self, path, page_id, bs_parser, link_only=False, resize=False):
         """Fetch ArchDaily Gallery images."""
         all_link = []
         for i, gallery_item in enumerate(
@@ -448,6 +450,13 @@ class CaseCollector(object):
                             temp_img = urllib.request.urlopen(req)
                             with open(image_filename, 'wb') as img_file:
                                 img_file.write(temp_img.read())
+
+                            if resize:
+                                image_utilities.resize_img(
+                                    image_filename,
+                                    540,
+                                    delete=True
+                                )
                             logging.info(image_name + ' Downloaded')
                         except Exception as e:
                             logging.error('Failed to download ' + image_url)
@@ -484,6 +493,7 @@ class CaseCollector(object):
                                 page_id=page_id,
                                 bs_parser=image_parser,
                                 link_only=False
+                                resize=True
                             ):
                                 with open(finish, 'w') as f:
                                     pass
