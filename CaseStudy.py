@@ -278,6 +278,12 @@ class CaseCollector(object):
                 category_data['AD_article_type'],
                 self.ArchDaily_naming(category_data['project_name'])
             )
+        elif category_data['AD_article_type'] == 'Architecture News':
+            save_path = os.path.join(
+                self.ArchDaily_root,
+                category_data['AD_article_type'],
+                self.ArchDaily_naming(category_data['project_name'])
+            )
 
         else:
             logging.warning('Currently unsupported AD page types')
@@ -517,6 +523,8 @@ class CaseCollector(object):
                     category['project_name'] = item.text.strip()
                 elif href_string == '/news':
                     category['AD_article_type'] = item.text.strip()
+                elif href_string == '/architecture-news':
+                    category['AD_article_type'] = 'Architecture News'
                 elif href_string == '/articles':
                     category['AD_article_type'] = 'Articles'
                 else:
