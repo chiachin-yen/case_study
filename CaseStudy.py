@@ -492,7 +492,7 @@ class CaseCollector(object):
                                 path=dirpath,
                                 page_id=page_id,
                                 bs_parser=image_parser,
-                                link_only=False
+                                link_only=False,
                                 resize=True
                             ):
                                 with open(finish, 'w') as f:
